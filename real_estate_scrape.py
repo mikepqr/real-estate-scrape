@@ -99,12 +99,13 @@ def main():
     )
     values = []
     for site in sites:
+        logging.info(f"Start  getting {site['name']}")
         try:
             url = site["url"]
         except KeyError:
             url = os.environ[site["name"].upper() + "_URL"]
         value = retry_get_value(url=url, xpath=site["xpath"])
-        print(f"{site['name']} {value=}")
+        logging.info(f"Finish getting {site['name']}. {value=}")
         values.append((site["name"], value))
     append_csv(values)
     plot_file()
