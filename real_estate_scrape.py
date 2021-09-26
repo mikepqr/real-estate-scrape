@@ -16,7 +16,7 @@ with open("sites.json") as f:
     sites = json.load(f)
 
 
-def get_page(url: str):
+def get_page(url: str) -> bytes:
     session = requests.Session()
     # User-Agent required otherwise you get blocked
     session.headers.update({"User-Agent": "Mozilla/5.0"})
@@ -27,13 +27,15 @@ def get_page(url: str):
             "url": url,
         }
         url = "http://api.scraperapi.com"
-    logging.info(f"Start  getting {url=}")
+        logging.info(f"Start  getting {session.params['url']} via {url}")
+    else:
+        logging.info(f"Start  getting {url=}")
     response = session.get(url, timeout=60)
     logging.info(f"Finish getting {url=}")
     return response.content
 
 
-def get_value(url: str, xpath: str):
+def get_value(url: str, xpath: str) -> str:
     page = get_page(url)
     tree = html.fromstring(page)
     try:
@@ -45,7 +47,7 @@ def get_value(url: str, xpath: str):
         raise
 
 
-def retry_get_value(url: str, xpath: str, n=3) -> str:
+def retry_get_value(url: str, xpath: str, n: int = 3) -> str:
     exceptions = 0
     while exceptions < n:
         logging.info(f"Start  scrape {exceptions+1}/{n}: {url=} {xpath}")
@@ -59,7 +61,7 @@ def retry_get_value(url: str, xpath: str, n=3) -> str:
     return "NaN"
 
 
-def ensure_csv():
+def ensure_csv() -> None:
     """Make sure a CSV with the appropriate header exists."""
     expected_header = "date," + ",".join(site["name"] for site in sites) + "\n"
     try:
@@ -71,7 +73,7 @@ def ensure_csv():
             f.write(expected_header)
 
 
-def append_csv(values):
+def append_csv(values) -> None:
     # https://stackoverflow.com/a/28164131/409879
     ensure_csv()
     datetime_string = datetime.now(timezone.utc).astimezone().isoformat()
@@ -80,7 +82,7 @@ def append_csv(values):
         f.write(line)
 
 
-def plot_file():
+def plot_file() -> None:
     df = pd.read_csv(csvfile, index_col="date", parse_dates=True)
     ax = df.plot()
     ax.ticklabel_format(style="plain", axis="y")  # no exponential notation on y-axis
