@@ -11,9 +11,10 @@ from lxml import html
 
 csvfile = "data.csv"
 plotfile = "data.png"
-
-with open("sites.json") as f:
-    sites = json.load(f)
+sites = [
+    {"name": "redfin", "xpath": "//div[@class='statsValue']//span/text()"},
+    {"name": "zillow", "xpath": "//div[@id='home-details-home-values']//h3/text()"},
+]
 
 
 def get_page(url: str) -> bytes:

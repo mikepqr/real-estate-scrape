@@ -1,9 +1,25 @@
 # real-estate-scrape
 
-Get the estimated value of an address from Redfin and Zillow every night and
-store the result.
+Get the estimated value of a property from Redfin and Zillow
 
-![Plot of Redfin and Zillow estimated value as a function of time](eg/data.png)
+## Automated usage
+
+![Plot of Redfin and Zillow estimated value as a function of time](https://github.com/mikepqr/real-estate-scrape-eg/data.png)
+
+To make charts like this by getting the value of a property once a day and
+storing the result, see
+[mikepqr/real-estate-scrape-eg](https://github.com/mikepqr/real-estate-scrape-eg]).
+
+## Advanced/manual usage
+
+Export `REDFIN_URL` and `ZILLOW_URL`. To optionally use scraperapi, also export
+`SCRAPERAPI_KEY`. Then to scrape and append to data.csv in the current working
+directory:
+
+    $ pip install real-estate-scrape
+    $ real-estate-scrape
+
+## Why
 
 Redfin and Zillow both give you an estimate of the current market value of your
 home. That estimate is given to the nearest dollar (!) and comes with a chart
@@ -13,46 +29,6 @@ pretend it doesn't. The precision of today's estimate and the smoothness of the
 chart make the estimate look ridiculously trustworthy. This scraper captures the
 bouncing, which gives you a good idea how much to trust the current value
 (probably good to 10-20% at most).
-
-See [`eg/data.csv`](eg/data.csv) and [`eg/data.png`](eg/data.png) for example
-output for [594 S Mapleton Dr, Los
-Angeles](https://www.redfin.com/CA/Los-Angeles/594-S-Mapleton-Dr-90024/home/6824711)
-(not my house, maybe I should stop giving away my elite scraping code for free).
-
-This repository uses [the git scraping
-pattern](https://simonwillison.net/2020/Oct/9/git-scraping/), i.e. GitHub
-actions run a cron job, and git stores the version controlled output of that
-cron job.
-
-## Usage: recurring job
-
-1. Sign up for [scraperapi](https://www.scraperapi.com/) and make a note of your
-   API key. The free account is enough to get started.
-
-2. Make a copy of this repository, e.g. [using the
-   template](https://github.com/mikepqr/real-estate-scrape/generate).
-
-3. Under Settings > Secrets, configure environment variables containing the URLs
-   of the address on Redfin and Zillow and your ScraperBox key:
-    - `REDFIN_URL`, e.g.
-      `https://www.redfin.com/CA/Los-Angeles/594-S-Mapleton-Dr-90024/home/6824711`
-    - `ZILLOW_URL`, e.g.
-      `https://www.zillow.com/homedetails/594-S-Mapleton-Dr-Los-Angeles-CA-90024/20524417_zpid/`
-    - `SCRAPERAPI_KEY`, e.g.`abcdefqwert12345`
-
-The scraping job runs every day at 5am UTC. Come back in 24 hours and you should
-find `data.csv` in your repository. Come back a few days later and you
-should see the beginnings of a chart in `data.png`.
-
-Alternatively, you can run the scraping job manually as often as you like by
-clicking "Run workflow" under Actions > scrape on GitHub.
-
-## Usage: manually from your own machine
-
-Clone the repository, export `REDFIN_URL` and `ZILLOW_URL` and run `python
-real_estate_scrape.py`. You probably won't need scraperapi if you're running
-this from a home internet connection, in which case simply don't set
-`SCRAPERAPI_KEY`.
 
 ## Adding a new site
 
