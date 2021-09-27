@@ -4,11 +4,10 @@ Get the estimated value of a property from Redfin and Zillow
 
 ## Automated usage
 
-![Plot of Redfin and Zillow estimated value as a function of time](https://github.com/mikepqr/real-estate-scrape-eg/data.png)
+![Plot of Redfin and Zillow estimated value as a function of time](https://github.com/mikepqr/real-estate-scrape-eg/raw/main/data.png)
 
-To make charts like this by getting the value of a property once a day and
-storing the result, see
-[mikepqr/real-estate-scrape-eg](https://github.com/mikepqr/real-estate-scrape-eg]).
+To make charts like this by getting the value of a property once a day, see
+[mikepqr/real-estate-scrape-eg](https://github.com/mikepqr/real-estate-scrape-eg).
 
 ## Advanced/manual usage
 

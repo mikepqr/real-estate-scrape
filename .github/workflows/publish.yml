@@ -10,7 +10,7 @@ on:
 
 jobs:
   publish:
-    if: github.repository == 'mikepqr/real-estate-scrape-src'
+    if: github.repository == 'mikepqr/real-estate-scrape'
     runs-on: ubuntu-latest
 
     steps:
