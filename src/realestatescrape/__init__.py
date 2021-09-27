@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import re
@@ -44,7 +43,7 @@ def get_value(url: str, xpath: str) -> str:
         return re.sub(r"[\$,\,]", "", value)
     except IndexError:
         logging.error(f"Could not find {xpath=} in {url=}")
-        logging.error(f"Last 1000 characters of page: {page[-1000:]}")
+        logging.error(f"Last 1000 characters of page: {page[-1000:].decode()}")
         raise
 
 
