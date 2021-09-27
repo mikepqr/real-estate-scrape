@@ -30,17 +30,6 @@ chart make the estimate look ridiculously trustworthy. This scraper captures the
 bouncing, which gives you a good idea how much to trust the current value
 (probably good to 10-20% at most).
 
-## Adding a new site
-
-To add a new site:
-
- - add an entry in `sites.json`
- - set `xpath` to the xpath containing the piece of data you want to collect
- - export the `<NAME>_URL` environment variable, where `<NAME>` should be
-   replaced with the upper case version of the `"name"` field in sites.json.
- - if you want to keep the history in `data.csv` manually edit its header to add
-   the new site (otherwise `data.csv` will be overwritten with an empty table).
-
 ## Caveats
 
  - The Zillow scraper doesn't work if the house is on the market. The page
