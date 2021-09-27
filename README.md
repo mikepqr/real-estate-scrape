@@ -3,19 +3,19 @@
 Get the estimated value of an address from Redfin and Zillow every night and
 store the result.
 
-![Plot of Redfin and Zillow valuation as a function of time](data.png)
+![Plot of Redfin and Zillow estimated value as a function of time](eg/data.png)
 
 Redfin and Zillow both give you an estimate of the current market value of your
-home. That estimate is given to the nearest dollar (!) and comes with a chart that
-claims to be the history of that estimate. That historical chart is a lie. The
-estimate for today bounces around a lot, but they retcon the history to pretend
-it doesn't. The precision of today's estimate and the smoothness of the chart
-make the estimate look ridiculously trustworthy. This scraper captures the
+home. That estimate is given to the nearest dollar (!) and comes with a chart
+that claims to be the history of that estimate. That historical chart is a lie.
+The estimate for today bounces around a lot, but they retcon the history to
+pretend it doesn't. The precision of today's estimate and the smoothness of the
+chart make the estimate look ridiculously trustworthy. This scraper captures the
 bouncing, which gives you a good idea how much to trust the current value
 (probably good to 10-20% at most).
 
-See [`data.csv`](data.csv) and [`data.png`](data.png) for example output for
-[594 S Mapleton Dr, Los
+See [`eg/data.csv`](eg/data.csv) and [`eg/data.png`](eg/data.png) for example
+output for [594 S Mapleton Dr, Los
 Angeles](https://www.redfin.com/CA/Los-Angeles/594-S-Mapleton-Dr-90024/home/6824711)
 (not my house, maybe I should stop giving away my elite scraping code for free).
 

@@ -23,7 +23,7 @@ jobs:
         REDFIN_URL: ${{ secrets.REDFIN_URL }}
         ZILLOW_URL: ${{ secrets.ZILLOW_URL }}
         SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
-      run: real-estate-scrape
+      run: cd eg && real-estate-scrape
     - name: Commit and push if it changed
       run: |-
         git config --global user.name "scraper-bot"
