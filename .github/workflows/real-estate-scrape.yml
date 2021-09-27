@@ -15,22 +15,15 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
-    - uses: actions/cache@v2
-      name: Configure pip caching
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    - name: Install Python dependencies
+    - name: Install real-estate-scrape and dependencies
       run: |
-        pip install -r requirements.txt
-    - name: Run scraper
+        pip install .
+    - name: Run real-estate-scrape
       env:
         REDFIN_URL: ${{ secrets.REDFIN_URL }}
         ZILLOW_URL: ${{ secrets.ZILLOW_URL }}
         SCRAPERAPI_KEY: ${{ secrets.SCRAPERAPI_KEY }}
-      run: python real_estate_scrape.py
+      run: real-estate-scrape
     - name: Commit and push if it changed
       run: |-
         git config --global user.name "scraper-bot"
