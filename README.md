@@ -28,8 +28,3 @@ pretend it doesn't. The precision of today's estimate and the smoothness of the
 chart make the estimate look ridiculously trustworthy. This scraper captures the
 bouncing, which gives you a good idea how much to trust the current value
 (probably good to 10-20% at most).
-
-## Caveats
-
- - The Zillow scraper doesn't work if the house is on the market. The page
-   layout changes and I can't figure out the xpath. PRs welcome.
