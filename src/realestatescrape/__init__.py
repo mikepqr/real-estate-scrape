@@ -11,8 +11,21 @@ from lxml import html
 csvfile = "data.csv"
 plotfile = "data.png"
 sites = [
-    {"name": "redfin", "xpath": "//div[@class='statsValue']//span/text()"},
-    {"name": "zillow", "xpath": "//div[@id='home-details-home-values']//h3/text()"},
+    {
+        "name": "redfin",
+        "xpath": "//div[@class='statsValue']//span/text()",
+    },
+    {
+        "name": "zillow",
+        "xpath": (
+            # find the button containing "Zestimate"
+            "//button[contains(text(), 'Zestimate')]"
+            # find its parent
+            "/parent::node()"
+            # find its span descendent containing a "$"
+            "//span[contains(text(), '$')]/text()"
+        ),
+    },
 ]
 
 
