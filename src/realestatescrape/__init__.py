@@ -13,17 +13,22 @@ plotfile = "data.png"
 sites = [
     {
         "name": "redfin",
-        "xpath": "//div[@class='statsValue']//span/text()",
+        "xpaths": (
+            "//div[@class='statsValue']//span/text()",  # works when not for sale
+            "//div[@class='statsValue']/text()",  # works when for sale
+        ),
     },
     {
         "name": "zillow",
-        "xpath": (
-            # find the button containing "Zestimate"
-            "//button[contains(text(), 'Zestimate')]"
-            # find its parent
-            "/parent::node()"
-            # find its span descendent containing a "$"
-            "//span[contains(text(), '$')]/text()"
+        "xpaths": (
+            (
+                # find the button containing "Zestimate"
+                "//button[contains(text(), 'Zestimate')]"
+                # find its parent
+                "/parent::node()"
+                # find its span descendent containing a "$"
+                "//span[contains(text(), '$')]/text()"
+            ),
         ),
     },
 ]
@@ -48,28 +53,29 @@ def get_page(url: str) -> bytes:
     return response.content
 
 
-def get_value(url: str, xpath: str) -> str:
+def get_value(url: str, xpaths: list[str]) -> str:
     page = get_page(url)
     tree = html.fromstring(page)
-    try:
-        value = tree.xpath(xpath)[0]
-        return re.sub(r"[\$,\,]", "", value)
-    except IndexError:
-        logging.error(f"Could not find {xpath=} in {url=}")
-        logging.error(f"Last 1000 characters of page: {page[-1000:].decode()}")
-        raise
+    for xpath in xpaths:
+        try:
+            value = tree.xpath(xpath)[0]
+            return re.sub(r"[\$,\,]", "", value)
+        except IndexError:
+            pass
+    logging.error(f"Last 1000 characters of page: {page[-1000:].decode()}")
+    raise IndexError(f"Could not find any of {xpaths=} in {url=}")
 
 
-def retry_get_value(url: str, xpath: str, n: int = 3) -> str:
+def retry_get_value(url: str, xpaths: list[str], n: int = 3) -> str:
     exceptions = 0
     while exceptions < n:
-        logging.info(f"Start  scrape {exceptions+1}/{n}: {url=} {xpath}")
+        logging.info(f"Start  scrape {exceptions + 1}/{n}: {url=} {xpaths=}")
         try:
-            value = get_value(url, xpath)
-            logging.info(f"Finish scrape {exceptions+1}/{n}. {value=}")
+            value = get_value(url, xpaths)
+            logging.info(f"Finish scrape {exceptions + 1}/{n}. {value=}")
             return value
         except Exception as e:
-            logging.error(f"Finish scrape {exceptions+1}/{n}. Failed: {e}")
+            logging.error(f"Finish scrape {exceptions + 1}/{n}. Failed: {e}")
             exceptions += 1
     return "NaN"
 
@@ -117,7 +123,7 @@ def main():
             url = site["url"]
         except KeyError:
             url = os.environ[site["name"].upper() + "_URL"]
-        value = retry_get_value(url=url, xpath=site["xpath"])
+        value = retry_get_value(url=url, xpaths=site["xpaths"])
         logging.info(f"Finish getting {site['name']}. {value=}")
         values.append((site["name"], value))
     append_csv(values)
