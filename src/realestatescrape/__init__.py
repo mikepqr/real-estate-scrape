@@ -1,7 +1,10 @@
 import logging
 import os
 import re
+from collections.abc import Sequence
+from dataclasses import dataclass
 from datetime import datetime, timezone
+from typing import Union
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -10,28 +13,38 @@ from lxml import html
 
 csvfile = "data.csv"
 plotfile = "data.png"
-sites = [
-    {
-        "name": "redfin",
-        "xpaths": (
-            "//div[@class='statsValue']//span/text()",  # works when not for sale
-            "//div[@class='statsValue']/text()",  # works when for sale
+
+
+@dataclass
+class Site:
+    name: str
+    xpaths: list[str]
+    url: Union[str, None] = None
+
+
+REDFIN = Site(
+    "redfin",
+    [
+        "//div[@class='statsValue']//span/text()",  # works when not for sale
+        "//div[@class='statsValue']/text()",  # works when for sale
+    ],
+)
+
+ZILLOW = Site(
+    "zillow",
+    [
+        (
+            # find the button containing "Zestimate"
+            "//button[contains(text(), 'Zestimate')]"
+            # find its parent
+            "/parent::node()"
+            # find its span descendent containing a "$"
+            "//span[contains(text(), '$')]/text()"
         ),
-    },
-    {
-        "name": "zillow",
-        "xpaths": (
-            (
-                # find the button containing "Zestimate"
-                "//button[contains(text(), 'Zestimate')]"
-                # find its parent
-                "/parent::node()"
-                # find its span descendent containing a "$"
-                "//span[contains(text(), '$')]/text()"
-            ),
-        ),
-    },
-]
+    ],
+)
+
+SITES = [REDFIN, ZILLOW]
 
 
 def get_page(url: str) -> bytes:
@@ -82,17 +95,18 @@ def retry_get_value(url: str, xpaths: list[str], n: int = 3) -> str:
 
 def ensure_csv() -> None:
     """Make sure a CSV with the appropriate header exists."""
-    expected_header = "date," + ",".join(site["name"] for site in sites) + "\n"
+    expected_header = "date," + ",".join([site.name for site in SITES]) + "\n"
     try:
         with open(csvfile) as f:
             header = next(f)
-            assert header == expected_header
+            if header != expected_header:
+                raise AssertionError
     except (FileNotFoundError, AssertionError):
         with open(csvfile, mode="w") as f:
             f.write(expected_header)
 
 
-def append_csv(values) -> None:
+def append_csv(values: Sequence[tuple[str, str]]) -> None:
     # https://stackoverflow.com/a/28164131/409879
     ensure_csv()
     datetime_string = datetime.now(timezone.utc).astimezone().isoformat()
@@ -116,16 +130,13 @@ def main():
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s %(levelname)-8s %(message)s"
     )
-    values = []
-    for site in sites:
-        logging.info(f"Start  getting {site['name']}")
-        try:
-            url = site["url"]
-        except KeyError:
-            url = os.environ[site["name"].upper() + "_URL"]
-        value = retry_get_value(url=url, xpaths=site["xpaths"])
-        logging.info(f"Finish getting {site['name']}. {value=}")
-        values.append((site["name"], value))
+    values: list[tuple[str, str]] = []
+    for site in SITES:
+        logging.info(f"Start  getting {site.name}")
+        url = site.url or os.environ[site.name.upper() + "_URL"]
+        value = retry_get_value(url=url, xpaths=site.xpaths)
+        logging.info(f"Finish getting {site.name}. {value=}")
+        values.append((site.name, value))
     append_csv(values)
     plot_file()
 
