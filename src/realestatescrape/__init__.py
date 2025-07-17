@@ -13,7 +13,7 @@ plotfile = "data.png"
 sites = [
     {
         "name": "redfin",
-        "xpath": "//div[@class='statsValue price']/text()",
+        "xpath": "//div[@class='statsValue price'][1]//text()",
     },
     {
         "name": "zillow",
