@@ -10,6 +10,8 @@ on:
 
 jobs:
   publish:
+    permissions:
+      id-token: write
     if: github.repository == 'mikepqr/real-estate-scrape'
     runs-on: ubuntu-latest
 
@@ -36,6 +38,4 @@ jobs:
           --outdir dist/
       - name: Publish to PyPI
         if: github.event.action == 'published'
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+        uses: pypa/gh-action-pypi-publish@release/v1
