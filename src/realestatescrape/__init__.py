@@ -13,7 +13,7 @@ plotfile = "data.png"
 sites = [
     {
         "name": "redfin",
-        "xpath": "//div[@class='statsValue']//span/text()",
+        "xpath": "//div[@class='statsValue price']/text()",
     },
     {
         "name": "zillow",
@@ -63,13 +63,13 @@ def get_value(url: str, xpath: str) -> str:
 def retry_get_value(url: str, xpath: str, n: int = 3) -> str:
     exceptions = 0
     while exceptions < n:
-        logging.info(f"Start  scrape {exceptions+1}/{n}: {url=} {xpath}")
+        logging.info(f"Start  scrape {exceptions + 1}/{n}: {url=} {xpath}")
         try:
             value = get_value(url, xpath)
-            logging.info(f"Finish scrape {exceptions+1}/{n}. {value=}")
+            logging.info(f"Finish scrape {exceptions + 1}/{n}. {value=}")
             return value
         except Exception as e:
-            logging.error(f"Finish scrape {exceptions+1}/{n}. Failed: {e}")
+            logging.error(f"Finish scrape {exceptions + 1}/{n}. Failed: {e}")
             exceptions += 1
     return "NaN"
 
