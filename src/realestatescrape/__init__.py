@@ -113,10 +113,10 @@ def main():
     values = []
     for site in sites:
         logging.info(f"Start  getting {site['name']}")
-        try:
-            url = site["url"]
-        except KeyError:
-            url = os.environ[site["name"].upper() + "_URL"]
+        url = site.get("url") or os.environ.get(site["name"].upper() + "_URL")
+        if url is None:
+            logging.warning(f"No URL configured for {site['name']}, skipping")
+            continue
         value = retry_get_value(url=url, xpath=site["xpath"])
         logging.info(f"Finish getting {site['name']}. {value=}")
         values.append((site["name"], value))
